@@ -1,0 +1,21 @@
+name: Auto Merge PRs
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]' # Prevent recursive runs
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Auto-merge PR
+        uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_METHOD: squash # or 'merge', 'rebase'
+          MERGE_LABELS: ""     # merge any PR, or set label if you want to restrict
+          MERGE_DELETE_BRANCH: "true"
